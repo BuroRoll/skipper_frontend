@@ -29,3 +29,17 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+      
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+#           port: ${{ secrets.PORT }}
+          script: |
+            cd skipper_frontend
+            docker-compose stop
+            docker-compose rm -f
+            docker-compose pull
+            docker-compose up --build -d
