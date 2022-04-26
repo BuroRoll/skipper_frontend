@@ -1,7 +1,7 @@
 import axios from "axios";
 import authStore from "../store/authStore";
 
-export let API_URL = ':8000'
+export let API_URL = '/backend'
 
 let $api = axios.create({
     baseURL: API_URL
