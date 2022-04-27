@@ -38,7 +38,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
 #           port: ${{ secrets.PORT }}
           script: |
-            cd skipper_frontend
             docker-compose stop
             docker-compose rm -f
             docker-compose pull
