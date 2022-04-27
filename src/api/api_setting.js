@@ -1,7 +1,7 @@
 import axios from "axios";
 import authStore from "../store/authStore";
 
-export let API_URL = 'skipper_backend:8000'
+export let API_URL = 'http://localhost:8000/'
 
 let $api = axios.create({
     baseURL: API_URL
