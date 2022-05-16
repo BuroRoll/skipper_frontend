@@ -14,18 +14,18 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Node.js ${{ matrix.node-version }}
+      steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-
-      # - name: npm init
-      #   run: npm init -y
-      # - name: Install npm dependencies
-      #   run: npm install
-      #
-      # - name: Run build task
-      #   run: npm run build --if-present
+      - name: Install Packages
+        run: npm install
+      - name: Build page
+        run: npm run build
+      - name: packege_project
+        run: tar -cvf deploy.tar ./build
 
       - name: Connect to server
         uses: appleboy/ssh-action@master
@@ -37,16 +37,6 @@ jobs:
           script: |
             rm -rf skipper_frontend
             mkdir skipper_frontend
-
-
-      - name:
-        run: |
-          npm init -y
-          npm install
-          npm run build
-          mkdir ../build
-          cp -TR . ../build
-          tar -cvf deploy.tar ../build/
 
       - name: copy file via ssh password
         uses: appleboy/scp-action@master
