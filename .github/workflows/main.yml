@@ -15,13 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - uses: actions/checkout@v1
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: Install Packages
-        run: cd /home/runner/work/skipper_frontend/skipper_frontend/
       - name: Install Packages
         run: npm install
       - name: Build page
