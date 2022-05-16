@@ -37,12 +37,18 @@ jobs:
           script: |
             rm -rf skipper_frontend
             mkdir skipper_frontend
-      - name: Run a multi-line script
+
+      - name: run mkdir
+        run: mkdir ../build
+
+      - name: run ls
+        run: ls
+
+      - name:
         run: |
-          mkdir ../build
-          ls
           cp -TR . ../build
           tar -cvf deploy.tar ../build/
+
       - name: copy file via ssh password
         uses: appleboy/scp-action@master
         with:
