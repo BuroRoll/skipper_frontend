@@ -14,31 +14,36 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          node-version: ${{ matrix.node-version }}
 
-      - name: Build and push Docker image
-        id:   docker_build
-        uses: docker/build-push-action@v2
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Connect to server
+        uses: appleboy/ssh-action@master
         with:
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/skipper_frontend:latest
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-      
-#      - name: executing remote ssh commands using password
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.HOST }}
-#          username: ${{ secrets.USERNAME }}
-#          password: ${{ secrets.PASSWORD }}
-#           port: ${{ secrets.PORT }}
-#          script: |
-#            docker-compose stop
-#            docker-compose rm -f
-#            docker-compose pull
-#            docker-compose up --build -d
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            rm -rf skipper_frontend
+            mkdir skipper_frontend
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "build/*"
+          target: "skipper_frontend"
