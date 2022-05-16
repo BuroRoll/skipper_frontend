@@ -24,8 +24,8 @@ jobs:
         run: npm install
       - name: Build page
         run: npm run build
-      # - name: packege_project
-      #   run: tar -cvf deploy.tar ./build
+      - name: packege_project
+        run: tar -cvf deploy.tar ./build
 
       - name: Connect to server
         uses: appleboy/ssh-action@master
@@ -45,5 +45,16 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "./deploy"
+          source: "deploy.tar"
           target: "skipper_frontend"
+      - name: Connect to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd skipper_frontend
+            tar -xvf deploy.tar
+            sudo nginx -s reload
